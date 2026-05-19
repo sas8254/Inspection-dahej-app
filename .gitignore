@@ -24,7 +24,6 @@ staticfiles/
 *.pid
 
 # IDE
-.vscode/
 .idea/
 *.swp
 .DS_Store
