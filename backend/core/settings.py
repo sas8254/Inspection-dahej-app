@@ -21,14 +21,20 @@ environ.Env.read_env(BASE_DIR / ".env")
 
 SECRET_KEY = env("DJANGO_SECRET_KEY")
 DEBUG = env("DJANGO_DEBUG")
-ALLOWED_HOSTS = [h.strip() for h in env("DJANGO_ALLOWED_HOSTS", default="").split(",") if h.strip()]
+ALLOWED_HOSTS = [
+    h.strip() for h in env("DJANGO_ALLOWED_HOSTS", default="").split(",") if h.strip()
+]
 
 CORS_ALLOWED_ORIGINS = [
-    o.strip() for o in env("DJANGO_CORS_ALLOWED_ORIGINS", default="").split(",") if o.strip()
+    o.strip()
+    for o in env("DJANGO_CORS_ALLOWED_ORIGINS", default="").split(",")
+    if o.strip()
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    o.strip() for o in env("DJANGO_CSRF_TRUSTED_ORIGINS", default="").split(",") if o.strip()
+    o.strip()
+    for o in env("DJANGO_CSRF_TRUSTED_ORIGINS", default="").split(",")
+    if o.strip()
 ]
 
 
@@ -41,14 +47,13 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-
     # Third-party
     "corsheaders",
     "rest_framework",
     "knox",
-
     # Local
     "accounts",
+    "dahej_insp",
 ]
 
 MIDDLEWARE = [
@@ -100,7 +105,9 @@ DATABASES = {
 # ---------- Auth ----------
 
 AUTH_PASSWORD_VALIDATORS = [
-    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
+    },
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
@@ -110,12 +117,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # ---------- DRF + Knox ----------
 
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "knox.auth.TokenAuthentication",
-    ),
-    "DEFAULT_PERMISSION_CLASSES": (
-        "rest_framework.permissions.IsAuthenticated",
-    ),
+    "DEFAULT_AUTHENTICATION_CLASSES": ("knox.auth.TokenAuthentication",),
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
 }
 
 REST_KNOX = {
@@ -139,7 +142,9 @@ STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STORAGES = {
     "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
-    "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"
+    },
 }
 
 

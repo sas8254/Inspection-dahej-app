@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(python -c \"import secrets; print\\(secrets.token_urlsafe\\(50\\)\\)\")"
+      "Bash(python -c \"import secrets; print\\(secrets.token_urlsafe\\(50\\)\\)\")",
+      "Bash(ls \"J:/code/my_project/backend\" 2>/dev/null || ls \"J:/code/django_project/backend\")"
     ]
   }
 }
