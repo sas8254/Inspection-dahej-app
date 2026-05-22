@@ -29,8 +29,9 @@ export const usersApi = {
 }
 
 export const overtimesApi = {
-  list:   () => api.get('/dahej/overtimes/').then(r => r.data),
+  list:   (params) => api.get('/dahej/overtimes/', { params }).then(r => r.data),
   create: (payload) => api.post('/dahej/overtimes/', payload).then(r => r.data),
   update: (id, payload) => api.put(`/dahej/overtimes/${id}/`, payload).then(r => r.data),
   remove: (id) => api.delete(`/dahej/overtimes/${id}/`),
+  ranking: (params) => api.get('/dahej/overtimes/ranking/', { params }).then(r => r.data),
 }
