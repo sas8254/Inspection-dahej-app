@@ -24,6 +24,10 @@ export const jobsApi = {
   remove: (id) => api.delete(`/dahej/jobs/${id}/`),
 }
 
+export const usersApi = {
+  list: () => api.get('/auth/users/').then(r => r.data),
+}
+
 export const overtimesApi = {
   list:   () => api.get('/dahej/overtimes/').then(r => r.data),
   create: (payload) => api.post('/dahej/overtimes/', payload).then(r => r.data),

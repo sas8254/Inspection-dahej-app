@@ -27,7 +27,7 @@ class JobViewSet(viewsets.ModelViewSet):
         # job_type.name / plant.name / created_by.username for each row.
         return (
             Job.objects
-            .select_related("job_type", "plant", "created_by", "updated_by")
+            .select_related("job_type", "plant", "performer", "created_by", "updated_by")
             .all()
         )
 

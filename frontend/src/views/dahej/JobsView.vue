@@ -1,10 +1,14 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { jobsApi, jobTypesApi, plantsApi } from '@/api/dahej'
+import { jobsApi, jobTypesApi, plantsApi, usersApi } from '@/api/dahej'
+import { useAuthStore } from '@/stores/auth'
+
+const auth = useAuthStore()
 
 const items = ref([])
 const jobTypes = ref([])
 const plants = ref([])
+const users = ref([])
 const loading = ref(false)
 const error = ref('')
 
@@ -16,6 +20,7 @@ const form = ref(emptyForm())
 function emptyForm() {
   return {
     id: null,
+    performer: auth.user?.id ?? null,
     job_type: null,
     plant: null,
     count: 1,
@@ -29,6 +34,7 @@ const headers = [
   { title: 'ID', key: 'id', width: 70 },
   { title: 'Job type', key: 'job_type_name' },
   { title: 'Plant', key: 'plant_name' },
+  { title: 'Performed by', key: 'performer_username' },
   { title: 'Count', key: 'count', width: 90 },
   { title: 'Done', key: 'done', width: 90 },
   { title: 'Created by', key: 'created_by_username' },
@@ -40,10 +46,17 @@ async function load() {
   loading.value = true
   error.value = ''
   try {
-    const [j, jt, p] = await Promise.all([jobsApi.list(), jobTypesApi.list(), plantsApi.list()])
+    if (!auth.user) await auth.fetchMe()
+    const [j, jt, p, u] = await Promise.all([
+      jobsApi.list(),
+      jobTypesApi.list(),
+      plantsApi.list(),
+      usersApi.list(),
+    ])
     items.value = j
     jobTypes.value = jt
     plants.value = p
+    users.value = u
   } catch (e) {
     error.value = 'Failed to load jobs.'
   } finally {
@@ -61,6 +74,7 @@ function openEdit(item) {
   isEdit.value = true
   form.value = {
     id: item.id,
+    performer: item.performer,
     job_type: item.job_type,
     plant: item.plant,
     count: item.count,
@@ -76,6 +90,7 @@ async function onSave() {
   error.value = ''
   try {
     const payload = {
+      performer: form.value.performer,
       job_type: form.value.job_type,
       plant: form.value.plant,
       count: form.value.count,
@@ -153,6 +168,11 @@ onMounted(load)
     <v-card>
       <v-card-title>{{ isEdit ? 'Edit job' : 'New job' }}</v-card-title>
       <v-card-text>
+        <v-select
+          v-model="form.performer"
+          :items="users" item-title="username" item-value="id"
+          label="Performed by" required
+        />
         <v-select
           v-model="form.job_type"
           :items="jobTypes" item-title="name" item-value="id"
