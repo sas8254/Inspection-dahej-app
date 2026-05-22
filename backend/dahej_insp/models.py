@@ -19,6 +19,9 @@ class Plant(models.Model):
 
 
 class Job(models.Model):
+    performer = models.ForeignKey(
+        User, on_delete=models.RESTRICT, related_name="performed_jobs"
+    )
     job_type = models.ForeignKey(
         JobType, on_delete=models.RESTRICT, related_name="jobs"
     )
@@ -27,7 +30,9 @@ class Job(models.Model):
     done = models.BooleanField(default=False)
     remarks = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="jobs")
+    created_by = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="created_jobs"
+    )
     updated_at = models.DateTimeField(auto_now=True)
     updated_by = models.ForeignKey(
         User,
