@@ -18,10 +18,11 @@ export const jobTypesApi = {
 }
 
 export const jobsApi = {
-  list:   () => api.get('/dahej/jobs/').then(r => r.data),
+  list:   (params) => api.get('/dahej/jobs/', { params }).then(r => r.data),
   create: (payload) => api.post('/dahej/jobs/', payload).then(r => r.data),
   update: (id, payload) => api.put(`/dahej/jobs/${id}/`, payload).then(r => r.data),
   remove: (id) => api.delete(`/dahej/jobs/${id}/`),
+  ranking: (params) => api.get('/dahej/jobs/ranking/', { params }).then(r => r.data),
 }
 
 export const usersApi = {

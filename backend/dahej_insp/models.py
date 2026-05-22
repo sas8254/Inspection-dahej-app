@@ -26,6 +26,7 @@ class Job(models.Model):
         JobType, on_delete=models.RESTRICT, related_name="jobs"
     )
     plant = models.ForeignKey(Plant, on_delete=models.RESTRICT, related_name="jobs")
+    job_date = models.DateField()
     count = models.IntegerField(default=1)
     done = models.BooleanField(default=False)
     remarks = models.TextField(blank=True)

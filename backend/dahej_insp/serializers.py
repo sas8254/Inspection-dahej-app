@@ -31,6 +31,7 @@ class JobSerializer(serializers.ModelSerializer):
             "performer", "performer_username",
             "job_type", "job_type_name",
             "plant", "plant_name",
+            "job_date",
             "count", "done", "remarks",
             "created_at", "created_by", "created_by_username",
             "updated_at", "updated_by", "updated_by_username",

@@ -25,14 +25,32 @@ class PlantViewSet(viewsets.ModelViewSet):
 class JobViewSet(viewsets.ModelViewSet):
     serializer_class = JobSerializer
 
-    def get_queryset(self):
-        # select_related avoids N+1 queries when the serializer reads
-        # job_type.name / plant.name / created_by.username for each row.
-        return (
+    def _filtered_queryset(self):
+        qs = (
             Job.objects
             .select_related("job_type", "plant", "performer", "created_by", "updated_by")
             .all()
         )
+        params = self.request.query_params
+        performer = params.get("performer")
+        job_type = params.get("job_type")
+        plant = params.get("plant")
+        date_from = params.get("date_from")
+        date_to = params.get("date_to")
+        if performer:
+            qs = qs.filter(performer_id=performer)
+        if job_type:
+            qs = qs.filter(job_type_id=job_type)
+        if plant:
+            qs = qs.filter(plant_id=plant)
+        if date_from:
+            qs = qs.filter(job_date__gte=date_from)
+        if date_to:
+            qs = qs.filter(job_date__lte=date_to)
+        return qs
+
+    def get_queryset(self):
+        return self._filtered_queryset()
 
     def perform_create(self, serializer):
         # created_by / updated_by are derived from the request, not the client.
@@ -45,6 +63,34 @@ class JobViewSet(viewsets.ModelViewSet):
 
     def perform_update(self, serializer):
         serializer.save(updated_by=self.request.user)
+
+    @action(detail=False, methods=["get"])
+    def ranking(self, request):
+        # Total count per performer under current filters. Highest first; ties
+        # broken by most recent job (more recent ranks higher).
+        qs = self._filtered_queryset()
+        rows = (
+            qs.values(
+                "performer_id",
+                "performer__username",
+                "performer__first_name",
+                "performer__last_name",
+            )
+            .annotate(total_count=Sum("count"), last_at=Max("job_date"))
+            .order_by("-total_count", "-last_at")
+        )
+        result = []
+        for idx, r in enumerate(rows, start=1):
+            result.append({
+                "rank": idx,
+                "user_id": r["performer_id"],
+                "username": r["performer__username"],
+                "first_name": r["performer__first_name"],
+                "last_name": r["performer__last_name"],
+                "total_count": r["total_count"],
+                "last_at": r["last_at"],
+            })
+        return Response(result)
 
 
 class OverTimeViewSet(viewsets.ModelViewSet):
