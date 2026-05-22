@@ -17,10 +17,10 @@ class PlantAdmin(admin.ModelAdmin):
 
 @admin.register(Job)
 class JobAdmin(admin.ModelAdmin):
-    list_display = ("id", "job_type", "plant", "count", "done", "created_by", "created_at")
-    list_filter = ("done", "job_type", "plant", "created_at")
+    list_display = ("id", "job_type", "plant", "performer", "count", "done", "created_by", "created_at")
+    list_filter = ("done", "job_type", "plant", "performer", "created_at")
     search_fields = ("remarks", "updation_remarks")
-    autocomplete_fields = ("job_type", "plant", "created_by", "updated_by")
+    autocomplete_fields = ("job_type", "plant", "performer", "created_by", "updated_by")
     readonly_fields = ("created_at", "updated_at")
     date_hierarchy = "created_at"
 

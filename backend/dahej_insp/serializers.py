@@ -20,6 +20,7 @@ class JobSerializer(serializers.ModelSerializer):
     # to show human-readable names alongside the FK ids.
     job_type_name = serializers.CharField(source="job_type.name", read_only=True)
     plant_name = serializers.CharField(source="plant.name", read_only=True)
+    performer_username = serializers.CharField(source="performer.username", read_only=True)
     created_by_username = serializers.CharField(source="created_by.username", read_only=True)
     updated_by_username = serializers.CharField(source="updated_by.username", read_only=True)
 
@@ -27,6 +28,7 @@ class JobSerializer(serializers.ModelSerializer):
         model = Job
         fields = (
             "id",
+            "performer", "performer_username",
             "job_type", "job_type_name",
             "plant", "plant_name",
             "count", "done", "remarks",

@@ -1,4 +1,4 @@
-from django.contrib.auth import login
+from django.contrib.auth import get_user_model, login
 from knox.views import LoginView as KnoxLoginView
 from rest_framework import generics, permissions, status
 from rest_framework.authtoken.serializers import AuthTokenSerializer
@@ -6,6 +6,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .serializers import RegisterSerializer, UserSerializer
+
+User = get_user_model()
 
 
 class HealthView(APIView):
@@ -43,3 +45,9 @@ class MeView(generics.RetrieveAPIView):
 
     def get_object(self):
         return self.request.user
+
+
+class UserListView(generics.ListAPIView):
+    serializer_class = UserSerializer
+    queryset = User.objects.filter(is_active=True).order_by("username")
+    pagination_class = None
