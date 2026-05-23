@@ -25,6 +25,19 @@ export const jobsApi = {
   ranking: (params) => api.get('/dahej/jobs/ranking/', { params }).then(r => r.data),
 }
 
+export const jobFilesApi = {
+  list: (jobId) => api.get('/dahej/job-files/', { params: { job: jobId } }).then(r => r.data),
+  upload: (jobId, file) => {
+    const fd = new FormData()
+    fd.append('job', jobId)
+    fd.append('file', file)
+    return api.post('/dahej/job-files/', fd, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }).then(r => r.data)
+  },
+  remove: (id) => api.delete(`/dahej/job-files/${id}/`),
+}
+
 export const usersApi = {
   list: () => api.get('/auth/users/').then(r => r.data),
 }

@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
-import { jobsApi, jobTypesApi, plantsApi, usersApi } from '@/api/dahej'
+import { jobsApi, jobTypesApi, jobFilesApi, plantsApi, usersApi } from '@/api/dahej'
 import { useAuthStore } from '@/stores/auth'
 
 const auth = useAuthStore()
@@ -73,6 +73,7 @@ function emptyForm() {
     done: false,
     remarks: '',
     updation_remarks: '',
+    newFiles: [],
   }
 }
 
@@ -154,6 +155,8 @@ function openEdit(item) {
     done: item.done,
     remarks: item.remarks,
     updation_remarks: '',
+    newFiles: [],
+    existingFiles: Array.isArray(item.files) ? [...item.files] : [],
   }
   formDialog.value = true
 }
@@ -177,10 +180,17 @@ async function onSave() {
       remarks: form.value.remarks,
       updation_remarks: form.value.updation_remarks,
     }
+    let savedId
     if (isEdit.value) {
-      await jobsApi.update(form.value.id, payload)
+      const updated = await jobsApi.update(form.value.id, payload)
+      savedId = updated?.id ?? form.value.id
     } else {
-      await jobsApi.create(payload)
+      const created = await jobsApi.create(payload)
+      savedId = created?.id
+    }
+    const toUpload = form.value.newFiles || []
+    for (const f of toUpload) {
+      await jobFilesApi.upload(savedId, f)
     }
     formDialog.value = false
     await load()
@@ -188,6 +198,22 @@ async function onSave() {
     error.value = formatError(e) || 'Failed to save job.'
   } finally {
     saving.value = false
+  }
+}
+
+async function onDeleteFile(file) {
+  if (!confirm(`Delete file "${file.name}"?`)) return
+  try {
+    await jobFilesApi.remove(file.id)
+    if (form.value.existingFiles) {
+      form.value.existingFiles = form.value.existingFiles.filter(f => f.id !== file.id)
+    }
+    if (detailItem.value?.files) {
+      detailItem.value.files = detailItem.value.files.filter(f => f.id !== file.id)
+    }
+    await load()
+  } catch (e) {
+    error.value = 'Failed to delete file.'
   }
 }
 
@@ -384,6 +410,29 @@ onMounted(load)
         <v-switch v-model="form.done" label="Done" color="primary" hide-details />
         <v-textarea v-model="form.remarks" label="Remarks" rows="2" auto-grow />
         <v-textarea v-if="isEdit" v-model="form.updation_remarks" label="Update remarks" rows="2" auto-grow />
+
+        <div v-if="isEdit && form.existingFiles && form.existingFiles.length" class="mb-2">
+          <div class="text-subtitle-2 mb-1">Existing files</div>
+          <v-list density="compact" class="py-0">
+            <v-list-item
+              v-for="f in form.existingFiles" :key="f.id"
+              :title="f.name" :subtitle="formatDate(f.uploaded_at)"
+            >
+              <template #append>
+                <v-btn size="small" variant="text" :href="f.url" target="_blank" rel="noopener">Open</v-btn>
+                <v-btn size="small" variant="text" color="error" @click="onDeleteFile(f)">Delete</v-btn>
+              </template>
+            </v-list-item>
+          </v-list>
+        </div>
+
+        <v-file-input
+          v-model="form.newFiles"
+          label="Attach files"
+          prepend-icon="mdi-paperclip"
+          multiple chips show-size
+          density="compact"
+        />
       </v-card-text>
       <v-card-actions>
         <v-spacer />
@@ -412,6 +461,22 @@ onMounted(load)
           <v-list-item title="Updated at" :subtitle="formatDate(detailItem.updated_at)" />
           <v-list-item title="Update remarks" :subtitle="detailItem.updation_remarks || '—'" />
         </v-list>
+
+        <div class="mt-3">
+          <div class="text-subtitle-2 mb-1">Files</div>
+          <div v-if="!detailItem.files || !detailItem.files.length" class="text-medium-emphasis">—</div>
+          <v-list v-else density="compact" class="py-0">
+            <v-list-item
+              v-for="f in detailItem.files" :key="f.id"
+              :title="f.name" :subtitle="formatDate(f.uploaded_at)"
+            >
+              <template #append>
+                <v-btn size="small" variant="text" :href="f.url" target="_blank" rel="noopener">Open</v-btn>
+                <v-btn size="small" variant="text" color="error" @click="onDeleteFile(f)">Delete</v-btn>
+              </template>
+            </v-list-item>
+          </v-list>
+        </div>
       </v-card-text>
       <v-card-actions>
         <v-spacer />

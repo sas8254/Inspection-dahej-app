@@ -51,6 +51,18 @@ class Job(models.Model):
         return f"{self.job_type.name} - {self.plant.name}"
 
 
+class JobFile(models.Model):
+    job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name="files")
+    file = models.FileField(upload_to="job_files/")
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-uploaded_at"]
+
+    def __str__(self):
+        return f"File for {self.job} uploaded at {self.uploaded_at}"
+
+
 class OverTime(models.Model):
     user = models.ForeignKey(User, on_delete=models.RESTRICT, related_name="overtimes")
     plants = models.ManyToManyField(Plant, related_name="overtimes", blank=True)

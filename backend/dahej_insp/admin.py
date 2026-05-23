@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Job, JobType, OverTime, Plant
+from .models import Job, JobFile, JobType, OverTime, Plant
 
 
 @admin.register(JobType)
@@ -23,6 +23,14 @@ class JobAdmin(admin.ModelAdmin):
     autocomplete_fields = ("job_type", "plant", "performer", "created_by", "updated_by")
     readonly_fields = ("created_at", "updated_at")
     date_hierarchy = "created_at"
+
+
+@admin.register(JobFile)
+class JobFileAdmin(admin.ModelAdmin):
+    list_display = ("id", "job", "file", "uploaded_at")
+    list_filter = ("uploaded_at",)
+    autocomplete_fields = ("job",)
+    readonly_fields = ("uploaded_at",)
 
 
 @admin.register(OverTime)

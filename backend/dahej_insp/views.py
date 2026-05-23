@@ -1,10 +1,12 @@
 from django.db.models import Max, Sum
 from rest_framework import viewsets
 from rest_framework.decorators import action
+from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 
-from .models import Job, JobType, OverTime, Plant
+from .models import Job, JobFile, JobType, OverTime, Plant
 from .serializers import (
+    JobFileSerializer,
     JobSerializer,
     JobTypeSerializer,
     OverTimeSerializer,
@@ -91,6 +93,18 @@ class JobViewSet(viewsets.ModelViewSet):
                 "last_at": r["last_at"],
             })
         return Response(result)
+
+
+class JobFileViewSet(viewsets.ModelViewSet):
+    serializer_class = JobFileSerializer
+    parser_classes = (MultiPartParser, FormParser)
+
+    def get_queryset(self):
+        qs = JobFile.objects.select_related("job").all()
+        job = self.request.query_params.get("job")
+        if job:
+            qs = qs.filter(job_id=job)
+        return qs
 
 
 class OverTimeViewSet(viewsets.ModelViewSet):
