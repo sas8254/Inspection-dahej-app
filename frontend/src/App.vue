@@ -11,7 +11,7 @@ async function onLogout() {
 
 <template>
   <v-app>
-    <v-app-bar color="primary" density="compact">
+    <v-app-bar>
       <v-app-bar-title>Core</v-app-bar-title>
 
       <template v-if="auth.isAuthenticated">
@@ -41,7 +41,7 @@ async function onLogout() {
     </v-app-bar>
 
     <v-main>
-      <v-container>
+      <v-container class="pt-6">
         <RouterView />
       </v-container>
     </v-main>

@@ -1,0 +1,208 @@
+/* iOS-inspired glassmorphism theme */
+
+:root {
+  --glass-bg: rgba(255, 255, 255, 0.55);
+  --glass-bg-strong: rgba(255, 255, 255, 0.72);
+  --glass-bg-soft: rgba(255, 255, 255, 0.35);
+  --glass-border: rgba(255, 255, 255, 0.5);
+  --glass-border-soft: rgba(255, 255, 255, 0.25);
+  --glass-shadow: 0 8px 32px rgba(31, 38, 135, 0.12);
+  --glass-shadow-lg: 0 20px 60px rgba(31, 38, 135, 0.18);
+  --glass-blur: saturate(180%) blur(20px);
+  --ios-radius: 18px;
+  --ios-radius-lg: 24px;
+}
+
+html,
+body,
+#app {
+  min-height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display',
+    'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Animated gradient background like iOS wallpapers */
+.v-application {
+  background: transparent !important;
+}
+
+.v-application::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(at 20% 10%, #ffd6e0 0px, transparent 50%),
+    radial-gradient(at 80% 0%, #c5dcff 0px, transparent 50%),
+    radial-gradient(at 70% 80%, #d5c9ff 0px, transparent 50%),
+    radial-gradient(at 10% 90%, #c8f1ff 0px, transparent 50%),
+    linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
+  background-attachment: fixed;
+}
+
+.v-application::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    radial-gradient(rgba(255, 255, 255, 0.4) 1px, transparent 1px);
+  background-size: 22px 22px;
+  opacity: 0.35;
+}
+
+/* App bar — translucent frosted glass */
+.glass-appbar.v-app-bar {
+  background: rgba(255, 255, 255, 0.6) !important;
+  color: #1c1c1e !important;
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  border-bottom: 1px solid var(--glass-border-soft);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset,
+    0 4px 24px rgba(31, 38, 135, 0.06);
+}
+
+.glass-appbar .v-app-bar-title {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.glass-appbar .v-btn {
+  color: #1c1c1e;
+}
+
+/* Cards — frosted panel */
+.glass-card.v-card {
+  background: var(--glass-bg) !important;
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.glass-card.v-card:hover {
+  box-shadow: var(--glass-shadow-lg);
+}
+
+.glass-card .v-card-title {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  font-size: 1.25rem;
+}
+
+/* Buttons — iOS pill */
+.v-btn {
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  font-weight: 600 !important;
+}
+
+.v-btn--variant-elevated,
+.v-btn--variant-flat {
+  box-shadow: 0 6px 16px rgba(10, 132, 255, 0.18);
+}
+
+.v-btn.v-btn--variant-text:hover {
+  background: rgba(10, 132, 255, 0.08);
+}
+
+/* Inputs — rounded, soft */
+.v-field.v-field--variant-outlined {
+  border-radius: 14px !important;
+}
+
+.v-field--variant-outlined .v-field__outline__start,
+.v-field--variant-outlined .v-field__outline__end,
+.v-field--variant-outlined .v-field__outline__notch::before,
+.v-field--variant-outlined .v-field__outline__notch::after {
+  border-color: rgba(60, 60, 67, 0.18) !important;
+}
+
+.v-field--variant-outlined .v-field__field {
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 14px;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+/* Lists / menus / dropdowns */
+.glass-list.v-list,
+.v-menu > .v-overlay__content > .v-list,
+.v-overlay__content .v-list {
+  background: var(--glass-bg-strong) !important;
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow-lg);
+  border-radius: 14px !important;
+}
+
+.v-list-item--active {
+  color: #0a84ff;
+}
+
+/* Data tables */
+.glass-table.v-data-table,
+.glass-table.v-data-table .v-table__wrapper {
+  background: transparent !important;
+}
+
+.glass-table .v-data-table__th,
+.glass-table thead th {
+  background: rgba(255, 255, 255, 0.6) !important;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  font-weight: 600 !important;
+  color: #3c3c43 !important;
+  border-bottom: 1px solid var(--glass-border-soft) !important;
+}
+
+.glass-table tbody tr {
+  transition: background 0.15s ease;
+}
+
+.glass-table tbody tr:hover {
+  background: rgba(10, 132, 255, 0.06) !important;
+}
+
+.glass-table tbody td {
+  border-bottom: 1px solid rgba(60, 60, 67, 0.08) !important;
+}
+
+/* Dialogs */
+.glass-dialog .v-overlay__content,
+.glass-dialog.v-card {
+  background: var(--glass-bg-strong) !important;
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--ios-radius-lg) !important;
+  box-shadow: var(--glass-shadow-lg);
+}
+
+/* Chips */
+.v-chip {
+  font-weight: 500;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Scrollbar — subtle */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(60, 60, 67, 0.25);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(60, 60, 67, 0.4);
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
