@@ -12,7 +12,7 @@ async function onLogout() {
 <template>
   <v-app>
     <v-app-bar>
-      <v-app-bar-title>Core</v-app-bar-title>
+      <v-app-bar-title>INSP Dahej</v-app-bar-title>
 
       <template v-if="auth.isAuthenticated">
         <v-btn :to="{ name: 'jobs' }">Jobs</v-btn>
