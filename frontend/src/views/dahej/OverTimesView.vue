@@ -224,6 +224,13 @@ onMounted(load)
 </script>
 
 <template>
+  <div class="d-flex align-center mb-4">
+    <div class="text-h5">Overtime</div>
+    <v-spacer />
+    <v-btn icon variant="text" @click="load" :loading="loading" class="mr-2"><v-icon>mdi-refresh</v-icon></v-btn>
+    <v-btn color="primary" prepend-icon="mdi-plus" @click="openCreate">Log overtime</v-btn>
+  </div>
+
   <v-card class="mb-4">
     <v-card-title>Filters</v-card-title>
     <v-card-text>
@@ -304,12 +311,7 @@ onMounted(load)
   </v-card>
 
   <v-card>
-    <v-card-title class="d-flex align-center">
-      Overtime
-      <v-spacer />
-      <v-btn icon variant="text" @click="load" :loading="loading"><v-icon>mdi-refresh</v-icon></v-btn>
-      <v-btn color="primary" prepend-icon="mdi-plus" @click="openCreate">Log overtime</v-btn>
-    </v-card-title>
+    <v-card-title>Overtime</v-card-title>
 
     <v-card-text>
       <v-alert v-if="error" type="error" density="compact" closable class="mb-3" @click:close="error = ''">{{ error }}</v-alert>
